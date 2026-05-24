@@ -1,21 +1,21 @@
 // ============================
-// SAFE WARFARE MOD (FIXED)
+// FIXED WARFARE MOD (CLEAN)
 // ============================
 
-// ---------- SOLDIER ----------
+// ---------- INDIA SOLDIER ----------
 elements.india_soldier = {
     color: "#FF9933",
-    category: "warfare",
+    category: "weapons",
     state: "solid",
 
     tick: function(pixel) {
 
-        // simple movement (SAFE)
+        // simple movement
         if (Math.random() < 0.5) {
             pixel.x += Math.random() < 0.5 ? -1 : 1;
         }
 
-        // simple attack (no pixelMap scanning abuse)
+        // simple attack effect
         if (Math.random() < 0.03) {
             createPixel("fire", pixel.x + 1, pixel.y);
         }
@@ -25,7 +25,7 @@ elements.india_soldier = {
 // ---------- ENEMY SOLDIER ----------
 elements.enemy_soldier = {
     color: "#990000",
-    category: "warfare",
+    category: "weapons",
     state: "solid",
 
     tick: function(pixel) {
@@ -43,7 +43,7 @@ elements.enemy_soldier = {
 // ---------- TANK ----------
 elements.tank = {
     color: "#556B2F",
-    category: "warfare",
+    category: "weapons",
     state: "solid",
 
     tick: function(pixel) {
@@ -52,7 +52,6 @@ elements.tank = {
             pixel.x += 1;
         }
 
-        // SAFE explosion (correct function)
         if (Math.random() < 0.02) {
             explode(pixel.x + 1, pixel.y, 4);
         }
@@ -62,7 +61,7 @@ elements.tank = {
 // ---------- MISSILE ----------
 elements.missile = {
     color: "#888888",
-    category: "warfare",
+    category: "weapons",
     state: "solid",
 
     tick: function(pixel) {
@@ -79,7 +78,7 @@ elements.missile = {
 // ---------- BOMBER PLANE ----------
 elements.bomber_plane = {
     color: "#777777",
-    category: "warfare",
+    category: "weapons",
     state: "solid",
 
     tick: function(pixel) {
@@ -92,17 +91,17 @@ elements.bomber_plane = {
     }
 };
 
-// ---------- TSAR BOMB (FIXED) ----------
+// ---------- TSAR BOMB ----------
 elements.tsar_bomb = {
-    color: "#333333",
-    category: "warfare",
+    color: "#222222",
+    category: "weapons",
     state: "solid",
 
     tick: function(pixel) {
 
         if (pixel.temp > 120 || Math.random() < 0.001) {
 
-            // SAFE explosion (no explodeAt)
+            // big explosion
             explode(pixel.x, pixel.y, 30);
 
             // radiation effect
