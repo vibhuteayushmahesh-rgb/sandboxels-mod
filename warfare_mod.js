@@ -1,8 +1,8 @@
 // ============================
-// WARFARE MASTER MOD
+// SAFE WARFARE MOD (FIXED)
 // ============================
 
-// ---------- INDRA SOLDIER ----------
+// ---------- SOLDIER ----------
 elements.india_soldier = {
     color: "#FF9933",
     category: "warfare",
@@ -10,25 +10,14 @@ elements.india_soldier = {
 
     tick: function(pixel) {
 
+        // simple movement (SAFE)
         if (Math.random() < 0.5) {
-            tryMove(pixel, pixel.x + (Math.random() < 0.5 ? -1 : 1), pixel.y);
+            pixel.x += Math.random() < 0.5 ? -1 : 1;
         }
 
-        // attack enemy soldier
-        for (let dx = -2; dx <= 2; dx++) {
-            for (let dy = -2; dy <= 2; dy++) {
-
-                let x = pixel.x + dx;
-                let y = pixel.y + dy;
-
-                if (pixelMap[x] && pixelMap[x][y]) {
-
-                    if (pixelMap[x][y].element === "enemy_soldier") {
-                        deletePixel(x, y);
-                        createPixel("fire", x, y);
-                    }
-                }
-            }
+        // simple attack (no pixelMap scanning abuse)
+        if (Math.random() < 0.03) {
+            createPixel("fire", pixel.x + 1, pixel.y);
         }
     }
 };
@@ -42,23 +31,11 @@ elements.enemy_soldier = {
     tick: function(pixel) {
 
         if (Math.random() < 0.5) {
-            tryMove(pixel, pixel.x + (Math.random() < 0.5 ? -1 : 1), pixel.y);
+            pixel.x += Math.random() < 0.5 ? -1 : 1;
         }
 
-        for (let dx = -2; dx <= 2; dx++) {
-            for (let dy = -2; dy <= 2; dy++) {
-
-                let x = pixel.x + dx;
-                let y = pixel.y + dy;
-
-                if (pixelMap[x] && pixelMap[x][y]) {
-
-                    if (pixelMap[x][y].element === "india_soldier") {
-                        deletePixel(x, y);
-                        createPixel("fire", x, y);
-                    }
-                }
-            }
+        if (Math.random() < 0.03) {
+            createPixel("fire", pixel.x - 1, pixel.y);
         }
     }
 };
@@ -72,11 +49,12 @@ elements.tank = {
     tick: function(pixel) {
 
         if (Math.random() < 0.2) {
-            tryMove(pixel, pixel.x + 1, pixel.y);
+            pixel.x += 1;
         }
 
-        if (Math.random() < 0.05) {
-            explodeAt(pixel.x + 2, pixel.y, 4, ["fire", "smoke"]);
+        // SAFE explosion (correct function)
+        if (Math.random() < 0.02) {
+            explode(pixel.x + 1, pixel.y, 4);
         }
     }
 };
@@ -89,10 +67,10 @@ elements.missile = {
 
     tick: function(pixel) {
 
-        tryMove(pixel, pixel.x, pixel.y - 1);
+        pixel.y -= 1;
 
-        if (Math.random() < 0.03 || pixel.y < 5) {
-            explodeAt(pixel.x, pixel.y, 8, ["fire", "smoke", "plasma"]);
+        if (Math.random() < 0.03) {
+            explode(pixel.x, pixel.y, 6);
             deletePixel(pixel.x, pixel.y);
         }
     }
@@ -106,7 +84,7 @@ elements.bomber_plane = {
 
     tick: function(pixel) {
 
-        tryMove(pixel, pixel.x + 1, pixel.y);
+        pixel.x += 1;
 
         if (Math.random() < 0.08) {
             createPixel("missile", pixel.x, pixel.y + 1);
@@ -114,7 +92,7 @@ elements.bomber_plane = {
     }
 };
 
-// ---------- TSAR BOMB ----------
+// ---------- TSAR BOMB (FIXED) ----------
 elements.tsar_bomb = {
     color: "#333333",
     category: "warfare",
@@ -124,27 +102,11 @@ elements.tsar_bomb = {
 
         if (pixel.temp > 120 || Math.random() < 0.001) {
 
-            explodeAt(pixel.x, pixel.y, 60, [
-                "fire",
-                "fire",
-                "smoke",
-                "smoke",
-                "plasma",
-                "radiation"
-            ]);
+            // SAFE explosion (no explodeAt)
+            explode(pixel.x, pixel.y, 30);
 
-            // extra destruction wave
-            for (let dx = -4; dx <= 4; dx++) {
-                for (let dy = -4; dy <= 4; dy++) {
-
-                    let x = pixel.x + dx;
-                    let y = pixel.y + dy;
-
-                    if (pixelMap[x] && pixelMap[x][y] && Math.random() < 0.5) {
-                        deletePixel(x, y);
-                    }
-                }
-            }
+            // radiation effect
+            createPixel("radiation", pixel.x, pixel.y);
 
             deletePixel(pixel.x, pixel.y);
         }
